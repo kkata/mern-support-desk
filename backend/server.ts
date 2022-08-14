@@ -1,9 +1,14 @@
 import express from "express";
+import "colors";
 import "dotenv/config";
 import router from "./routes/userRoutes";
 import { errorHandler } from "./middleware/errorMiddleware";
+import { connectDB } from "./config/db";
 
 const PORT = process.env.PORT || 8000;
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 
