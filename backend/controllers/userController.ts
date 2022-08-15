@@ -1,7 +1,9 @@
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { User } from "../models/userModel";
+import { Types } from "mongoose";
 
 // @desc Register a new user
 // @route POST /api/users
@@ -40,6 +42,7 @@ export const registerUser: RequestHandler = asyncHandler(
         _id: user._id,
         name: user.name,
         email: user.email,
+        token: generateToken(user._id),
       });
     } else {
       res.status(400);
@@ -52,7 +55,28 @@ export const registerUser: RequestHandler = asyncHandler(
 // @route POST /api/users/login
 // @access Public
 export const loginUser: RequestHandler = asyncHandler(
-  async (_req, res, _next) => {
-    res.send("Login Route");
+  async (req, res, _next) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    // Check user and password match
+    if (user && (await bcrypt.compare(password, user.password))) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401);
+      throw new Error("Invalid credentials");
+    }
   }
 );
+
+const generateToken = (id: Types.ObjectId) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET!, {
+    expiresIn: "30d",
+  });
+};
