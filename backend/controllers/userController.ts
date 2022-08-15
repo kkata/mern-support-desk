@@ -75,6 +75,19 @@ export const loginUser: RequestHandler = asyncHandler(
   }
 );
 
+// @desc Get current user
+// @route POST /api/users/me
+// @access Private
+export const getMe: RequestHandler = asyncHandler(async (req, res, _next) => {
+  const user = {
+    id: req.user._id,
+    email: req.user.email,
+    name: req.user.name,
+  };
+
+  res.status(200).json(user);
+});
+
 const generateToken = (id: Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
     expiresIn: "30d",
