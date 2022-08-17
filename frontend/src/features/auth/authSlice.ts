@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import { authService } from "./authService";
-import { UserType, RegisterType } from "../../type";
-
-type LoginType = Pick<UserType, "email" | "password">;
+import { LoginType, RegisterType } from "../../type";
 
 type UserLocalStorage = {
   token: string;
@@ -47,12 +45,24 @@ export const register = createAsyncThunk<
   }
 });
 
-export const login = createAsyncThunk(
-  "auth/login",
-  async (user: LoginType, thunkApi) => {
-    console.log("user", user);
+export const login = createAsyncThunk<
+  UserLocalStorage, // payloadCreator の返り値の型
+  LoginType, // payloadCreator の第1引数(arg)の型
+  {
+    rejectValue: string; // payloadCreator の第2引数(thunkApi)のための型
   }
-);
+>("auth/login", async (user, thunkApi) => {
+  try {
+    return await authService.login(user);
+  } catch (error: any) {
+    const message: string =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+
+    return thunkApi.rejectWithValue(message);
+  }
+});
 
 export const logout = createAction("auth/logout", () => {
   authService.logout();
@@ -85,6 +95,22 @@ export const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(register.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        if (action.payload) {
+          state.message = action.payload;
+        }
+        state.user = null;
+      })
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         if (action.payload) {
