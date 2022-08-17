@@ -10,3 +10,4 @@ export type UserType = {
 };
 
 export type RegisterType = Pick<UserType, "name" | "email" | "password">;
+export type LoginType = Pick<UserType, "email" | "password">;

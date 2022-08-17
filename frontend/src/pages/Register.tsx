@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { register, reset } from "../features/auth/authSlice";
 import { AppDispatch, RootState } from "../app/store";
 import { AuthType } from "../type";
+import { Spinner } from "../components/Spinner";
 
 export const Register = () => {
   const [FormData, setFormData] = useState({
@@ -66,6 +67,10 @@ export const Register = () => {
         .catch(toast.error);
     }
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
