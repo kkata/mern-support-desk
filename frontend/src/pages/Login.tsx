@@ -19,10 +19,7 @@ export const Login = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector<
-    RootState,
-    AuthType
-  >((state) => state.auth);
+  const { isLoading } = useSelector<RootState, AuthType>((state) => state.auth);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...FormData, [e.currentTarget.name]: e.currentTarget.value });

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { register, reset } from "../features/auth/authSlice";
+import { register } from "../features/auth/authSlice";
 import { AppDispatch, RootState } from "../app/store";
 import { AuthType } from "../type";
 import { Spinner } from "../components/Spinner";
@@ -21,22 +21,7 @@ export const Register = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, isLoading, isSuccess, isError, message } = useSelector<
-    RootState,
-    AuthType
-  >((state) => state.auth);
-
-  // useEffect(() => {
-  //   if (isError) {
-  //     toast.error(message);
-  //   }
-
-  //   if (isSuccess || user) {
-  //     navigate("/");
-  //   }
-
-  // dispatch(reset());
-  // }, [isError, isSuccess, user, message, navigate, dispatch]);
+  const { isLoading } = useSelector<RootState, AuthType>((state) => state.auth);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...FormData, [e.currentTarget.name]: e.currentTarget.value });
