@@ -8,3 +8,5 @@ export type UserType = {
   password: string;
   password2: string;
 };
+
+export type RegisterType = Pick<UserType, "name" | "email" | "password">;
