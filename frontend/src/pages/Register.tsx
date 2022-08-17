@@ -25,17 +25,17 @@ export const Register = () => {
     AuthType
   >((state) => state.auth);
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
+  // useEffect(() => {
+  //   if (isError) {
+  //     toast.error(message);
+  //   }
 
-    if (isSuccess || user) {
-      navigate("/");
-    }
+  //   if (isSuccess || user) {
+  //     navigate("/");
+  //   }
 
-    dispatch(reset());
-  }, [isError, isSuccess, user, message, navigate, dispatch]);
+  // dispatch(reset());
+  // }, [isError, isSuccess, user, message, navigate, dispatch]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...FormData, [e.currentTarget.name]: e.currentTarget.value });
@@ -54,7 +54,16 @@ export const Register = () => {
         password,
       };
 
-      dispatch(register(userData));
+      dispatch(register(userData))
+        .unwrap()
+        .then((user) => {
+          // NOTE: by unwrapping the AsyncThunkAction we can navigate the user after
+          // getting a good response from our API or catch the AsyncThunkAction
+          // rejection to show an error message
+          toast.success(`Registered new user - ${user.name}`);
+          navigate("/");
+        })
+        .catch(toast.error);
     }
   };
 
