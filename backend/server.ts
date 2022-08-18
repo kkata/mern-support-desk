@@ -1,7 +1,8 @@
 import express from "express";
 import "colors";
 import "dotenv/config";
-import router from "./routes/userRoutes";
+import { userRouter } from "./routes/userRoutes";
+import { ticketRouter } from "./routes/ticketRoutes";
 import { errorHandler } from "./middleware/errorMiddleware";
 import { connectDB } from "./config/db";
 
@@ -21,8 +22,9 @@ app.get("/", (_req, res) => {
   });
 });
 
-// Routes
-app.use("/api/users", router);
+// Routes Middleware
+app.use("/api/users", userRouter);
+app.use("/api/tickets", ticketRouter);
 
 app.use(errorHandler);
 
