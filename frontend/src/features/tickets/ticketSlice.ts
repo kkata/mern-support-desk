@@ -102,6 +102,29 @@ export const getTicket = createAsyncThunk<
   }
 });
 
+export const closeTicket = createAsyncThunk<
+  TicketType, // payloadCreator の返り値payloadの型
+  string, // payloadCreator の第1引数(arg)の型
+  {
+    state: RootState;
+    rejectValue: string; // payloadCreator の第2引数(thunkApi)のための型
+  }
+>("tickets/close", async (ticketId, thunkApi) => {
+  try {
+    const user = thunkApi.getState().auth.user;
+    if (user) {
+      return await ticketService.closeTicket(ticketId, user.token);
+    }
+  } catch (error: any) {
+    const message: string =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+
+    return thunkApi.rejectWithValue(message);
+  }
+});
+
 export const ticketSlice = createSlice({
   name: "ticket",
   initialState,
@@ -148,6 +171,14 @@ export const ticketSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         if (action.payload) state.message = action.payload;
+      })
+      .addCase(closeTicket.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.tickets?.map((ticket) => {
+          return ticket._id === action.payload._id
+            ? (ticket.status = "closed")
+            : ticket;
+        });
       });
   },
 });

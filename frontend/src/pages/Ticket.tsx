@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getTicket } from "../features/tickets/ticketSlice";
+import { useParams, useNavigate } from "react-router-dom";
+import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
 import { BackButton } from "../components/BackButton";
 import { Spinner } from "../components/Spinner";
 import { AppDispatch, RootState } from "../app/store";
@@ -13,6 +13,7 @@ export const Ticket = () => {
     RootState["tickets"]
   >((state) => state.tickets);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { ticketId } = useParams();
 
@@ -21,10 +22,14 @@ export const Ticket = () => {
       toast.error(message);
     }
 
-    if (ticketId !== undefined) {
-      dispatch(getTicket(ticketId));
-    }
+    if (ticketId) dispatch(getTicket(ticketId));
   }, [ticketId, isError, message, dispatch]);
+
+  const onTicketClose = () => {
+    if (ticketId) dispatch(closeTicket(ticketId));
+    toast.success("Ticket closed");
+    navigate("/tickets");
+  };
 
   if (isLoading) {
     return <Spinner />;
@@ -50,6 +55,12 @@ export const Ticket = () => {
           <p>{ticket.description}</p>
         </div>
       </header>
+
+      {ticket.status !== "closed" && (
+        <button onClick={onTicketClose} className="btn btn-block btn-danger">
+          Close Ticket
+        </button>
+      )}
     </div>
   );
 };
