@@ -1,9 +1,9 @@
 import axios from "axios";
-import { TicketType } from "./ticketSlice";
+import { CreateTicketType } from "./ticketSlice";
 
 const API_URL = "/api/tickets/";
 
-const createTicket = async (ticketData: TicketType, token: string) => {
+const createTicket = async (ticketData: CreateTicketType, token: string) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -15,6 +15,19 @@ const createTicket = async (ticketData: TicketType, token: string) => {
   return response.data;
 };
 
+const getTickets = async (token: string) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(API_URL, config);
+
+  return response.data;
+};
+
 export const ticketService = {
   createTicket,
+  getTickets,
 };

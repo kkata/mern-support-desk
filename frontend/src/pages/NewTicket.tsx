@@ -12,8 +12,8 @@ export const NewTicket = () => {
   const { user } = useSelector<RootState, AuthType>((state) => state.auth);
   const { isLoading, isError, isSuccess, message } = useSelector<
     RootState,
-    RootState["ticket"]
-  >((state) => state.ticket);
+    RootState["tickets"]
+  >((state) => state.tickets);
   const [name] = useState(user?.name);
   const [email] = useState(user?.email);
   const [product, setProduct] = useState("iPhone");
