@@ -11,7 +11,7 @@ type initialStateType = {
   message: string;
 };
 
-type TicketType = {
+export type TicketType = {
   createdAt: string;
   description: string;
   product: string;
