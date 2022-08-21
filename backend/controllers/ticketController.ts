@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import { User } from "../models/userModel";
 import { Ticket } from "../models/ticketModel";
-// import { Types } from "mongoose";
 
 // @desc Get user tickets
 // @route GET /api/tickets

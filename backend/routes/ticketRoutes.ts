@@ -10,6 +10,10 @@ import {
 
 import { protect } from "../middleware/authMiddleware";
 
+// Re-route into note router
+import { noteRouter } from "./noteRoutes";
+router.use("/:ticketId/notes", noteRouter);
+
 router.route("/").get(protect, getTickets).post(protect, createTicket);
 
 router
