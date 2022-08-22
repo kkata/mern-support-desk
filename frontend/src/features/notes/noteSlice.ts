@@ -52,6 +52,33 @@ export const getNotes = createAsyncThunk<
   }
 });
 
+export const createNote = createAsyncThunk<
+  NoteType, // payloadCreator の返り値payloadの型
+  Pick<NoteType, "text" | "ticket">, // payloadCreator の第1引数(arg)の型
+  {
+    state: RootState;
+    rejectValue: string; // payloadCreator の第2引数(thunkApi)のための型
+  }
+>("notes/create", async (noteData, thunkApi) => {
+  try {
+    const user = thunkApi.getState().auth.user;
+    if (user) {
+      return await noteService.createNote(
+        noteData.text,
+        noteData.ticket,
+        user.token
+      );
+    }
+  } catch (error: any) {
+    const message: string =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+
+    return thunkApi.rejectWithValue(message);
+  }
+});
+
 export const noteSlice = createSlice({
   name: "note",
   initialState,
@@ -69,6 +96,19 @@ export const noteSlice = createSlice({
         state.notes = action.payload;
       })
       .addCase(getNotes.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        if (action.payload) state.message = action.payload;
+      })
+      .addCase(createNote.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createNote.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.notes.push(action.payload); // push() is ok in redux-toolkit
+      })
+      .addCase(createNote.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         if (action.payload) state.message = action.payload;

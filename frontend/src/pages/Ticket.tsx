@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
-import { getNotes } from "../features/notes/noteSlice";
+import { getNotes, createNote } from "../features/notes/noteSlice";
 import { BackButton } from "../components/BackButton";
 import { Spinner } from "../components/Spinner";
 import { AppDispatch, RootState } from "../app/store";
@@ -65,7 +65,11 @@ export const Ticket = () => {
 
   const onNoteSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submit");
+
+    if (ticketId) {
+      const noteData = { text: noteText, ticket: ticketId };
+      dispatch(createNote(noteData));
+    }
     closeModal();
   };
 
