@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from "../app/store";
 import { TicketItem } from "../components/TicketItem";
 
 export const Tickets = () => {
-  const { tickets, isLoading, isError, isSuccess, message } = useSelector<
+  const { tickets, isLoading, isSuccess } = useSelector<
     RootState,
     RootState["tickets"]
   >((state) => state.tickets);

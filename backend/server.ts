@@ -1,3 +1,4 @@
+import path from "path";
 import express from "express";
 import "colors";
 import "dotenv/config";
@@ -16,15 +17,23 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (_req, res) => {
-  res.status(200).json({
-    message: "Hello World",
-  });
-});
-
 // Routes Middleware
 app.use("/api/users", userRouter);
 app.use("/api/tickets", ticketRouter);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+  app.get("*", (_, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+  });
+} else {
+  app.get("/", (_req, res) => {
+    res.status(200).json({
+      message: "Welcome to the Ticketing System",
+    });
+  });
+}
 
 app.use(errorHandler);
 
