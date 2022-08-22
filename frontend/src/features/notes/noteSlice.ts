@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { noteService } from "./noteService";
 import { RootState } from "../../app/store";
 
-type NoteType = {
+export type NoteType = {
   _id: string;
   user: string;
   ticket: string;
